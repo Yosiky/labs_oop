@@ -63,7 +63,7 @@ public:
 	double length() {
 		return 2 * M_PI * this->radius;
 	}
-	
+
 	void showInfo() {
 	std::cout << "Circle's info:" << std::endl;
 	std::cout << "\tCoordinate: x = " << x << ", y = " << y << std::endl;
@@ -96,7 +96,7 @@ private:
 	double x;
 	double y;
 	double radius;
-	
+
 
 public:
 
@@ -116,7 +116,7 @@ public:
 		y = new_y;
 	}
 
-};	
+};
 
 int main()
 {
@@ -134,8 +134,8 @@ int main()
 ```c++
 class Circle {
 	/* … */
-	
-	/* Declaration */ 
+
+	/* Declaration */
 	friend void helloCircle();
 };
 
@@ -153,7 +153,7 @@ class Circle {
 
 public:
 	/* You can have many constructors */
-	Circle() : x(0), y(0), radius(1), color("green") { 
+	Circle() : x(0), y(0), radius(1), color("green") {
         std::cout << "Default constructor without arguments\n" << std::endl;
     }
 
@@ -165,7 +165,7 @@ public:
 		radius = radius;
 		this->color = color;
 	}
-	
+
 	/* But u always have only one destructor */
 	~Circle() {
 		std::cout << "Circle " << color<< " destroyed" << std::endl;
@@ -180,7 +180,7 @@ int main()
 {
 	Circle c1, c2(0, 0, 10, "yellow");
 	// Circle cn = new Circle(...);
-	
+
 	c1.showInfo();
 	c2.showInfo();
 
@@ -239,9 +239,9 @@ void get_by_ref(Circle &rcircle)
 
 void get_by_cref(const Circle &rcircle)
 {
-    // reference to original object but can not be modified 
+    // reference to original object but can not be modified
     double x = circle.gex();
-    // double x = rcircle.setx(); /* error, cannot call non const method from const reference */ 
+    // double x = rcircle.setx(); /* error, cannot call non const method from const reference */
 }
 ```
 
@@ -258,15 +258,13 @@ void get_by_cref(const Circle &rcircle)
 Jim (without legs): Braiiiiinnnssss...
 ```
 
-После создания класса `Zombie`, напишите класс `ZombieEvent`, позволяющий создавать новых зомби. Для этого добавьте в него метод `setZombieType()`, который сохраняет `type` для последующих создаваемых зомби. И метод
-```c++
-Zombie *newZombie(const std::string &name)
-```
-который и будет создавать новых `Zombie` с установленным ранее полем `typе`, называть их каким-то именем, а затем возвращать указатель на созданного зомби.
-После этого Вам следует написать функцию `randomChump()`, создающую объект типа `Zombie` со случайным именем, а затем вызывающий метод `announce()` от нового зомби. Способ рандомизации Вам предстоит выбрать самим.
-Для проверки напиши полноценную программу, содержащую функцию `main()`. 
+После создания класса `Zombie`, напишите класс `ZombieEvent`, позволяющий создавать новых зомби. Для этого добавьте в него метод `setZombieType()`, который сохраняет `type` для последующих создаваемых зомби. И метод `Zombie *newZombie(std::string name)`, который и будет создавать новых `Zombie` с установленным ранее полем `typе`, называть их каким-то именем, а затем возвращать указатель на созданного зомби.
 
-При выполнении задания можете создавать переменные как на стеке, так и на куче. Выбирайте наиболее подходящий в Вашей ситуации способ. 
+После этого Вам следует написать функцию `randomChump()`, создающую объект типа `Zombie` со случайным именем, а затем вызывающий метод `announce()` от нового зомби. Способ рандомизации Вам предстоит выбрать самим.
+
+Для проверки напиши полноценную программу, содержащую функцию `main()`.
+
+При выполнении задания можете создавать переменные как на стеке, так и на куче. Выбирайте наиболее подходящий в Вашей ситуации способ.
 
 ## 2. ZombieHorde
 
@@ -295,14 +293,14 @@ Zombie *newZombie(const std::string &name)
 Jim attacks with his knife.
 ```
 
-Реализуй классы `HumanA` и `HumanB` так, чтобы следующий код печатал сначала **"crude spiked club"**, а затем **"some other type of club"** (и не иначе!) в обоих случаях. 
+Реализуй классы `HumanA` и `HumanB` так, чтобы следующий код печатал сначала **"crude spiked club"**, а затем **"some other type of club"** (и не иначе!) в обоих случаях.
 
 ```c++
 int main()
 {
 	{
 		Weapon club = Weapon("crude spiked club");
-		
+
 		HumanA bob("Bob", club);
 		bob.attack();
 		club.setType("some other type of club");
@@ -310,7 +308,7 @@ int main()
     }
     {
 		Weapon club = Weapon("crude spiked club");
-		
+
 		HumanB jim("Jim", club);
 		jim.attack();
 		club.setType("some other type of club");
