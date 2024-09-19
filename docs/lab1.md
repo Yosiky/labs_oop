@@ -8,23 +8,23 @@
 ```c++
 /* Discuss about structure size */
 struct S {
-	int x;
-	double d;
+    int x;
+    double d;
 }; /* sizeof(S) == 16 */
 
 struct S {
-	int a, b, c;
+    int a, b, c;
 }; /* sizeof(S) == 12 */
 
 /* Which size is here? */
 struct S {
-	int x;
-	double d;
+    int x;
+    double d;
 
-	struct A {
-		int x;
-		double d;
-	}; 
+    struct A {
+        int x;
+        double d;
+    }; 
 }; /* sizeof(S) == 16 */
 /* P.S.: we don't create a variable of type A */  
 ```
@@ -39,31 +39,31 @@ struct S {
 ```c++
 class Circle {
 public:
-	double x;
-	double y;
-	double radius;
-	std::string color;
+    double x;
+    double y;
+    double radius;
+    std::string color;
 };
 
 void show_info(const Circle *circle) {
-	/* circle is a pointer so we use "->" */
-	std::cout << "Circle's info:" << std::endl;
-	std::cout << "\tCoordinate: x = " << circle->x << ", y = " << circle->y << std::endl;
-	std::cout << "\tRadius = " << circle->radius << std::endl;
-	std::cout << "\tColor =  " << circle->color << std::endl;
+    /* circle is a pointer so we use "->" */
+    std::cout << "Circle's info:" << std::endl;
+    std::cout << "\tCoordinate: x = " << circle->x << ", y = " << circle->y << std::endl;
+    std::cout << "\tRadius = " << circle->radius << std::endl;
+    std::cout << "\tColor =  " << circle->color << std::endl;
 }
 
 int main()
 {
-	// Circle c{0, 0, 3, "blue"}; /* Aggregate initialization */
-	Circle c;
+    // Circle c{0, 0, 3, "blue"}; /* Aggregate initialization */
+    Circle c;
 
-	c.x = 0; /* c is an object so we use "." */
-	c.y = 0;
-	c.radius = 3;
-	c.color = "Blue";
+    c.x = 0; /* c is an object so we use "." */
+    c.y = 0;
+    c.radius = 3;
+    c.color = "Blue";
 
-	show_info(&c);
+    show_info(&c);
 }
 ```
 
@@ -84,15 +84,15 @@ class Circle {
     /* ... */
 
 public:
-	double area() {
-		return M_PI * radius * radius;
-	}
+    double area() {
+        return M_PI * radius * radius;
+    }
 
-	double length() {
-		return 2 * M_PI * this->radius;
-	}
+    double length() {
+        return 2 * M_PI * this->radius;
+    }
 
-	void showInfo(); /* Declaration */
+    void showInfo(); /* Declaration */
 
 /* Can't init namespace */
 /* Can to init in out of class */
@@ -100,10 +100,10 @@ public:
 };
 
 void Circle::showInfo() { /* Definition */
-	std::cout << "Circle's info:" << std::endl;
-	std::cout << "\tCoordinate: x = " << x << ", y = " << y << std::endl;
-	std::cout << "\tRadius = " << radius << std::endl;
-	std::cout << "\tColor =  " << color << std::endl;
+    std::cout << "Circle's info:" << std::endl;
+    std::cout << "\tCoordinate: x = " << x << ", y = " << y << std::endl;
+    std::cout << "\tRadius = " << radius << std::endl;
+    std::cout << "\tColor =  " << color << std::endl;
 }
 ```
 
@@ -131,29 +131,29 @@ void Circle::showInfo() { /* Definition */
 ```c++
 class Circle {
 public:
-	std::string color;
+    std::string color;
 
 private:
-	double x;
-	double y;
-	double radius;
+    double x;
+    double y;
+    double radius;
 
 public:
 
-	double getx(void) { return x; }
-	double gety(void) { return y; }
+    double getx(void) { return x; }
+    double gety(void) { return y; }
 
-	void setx(double new_x) { x = new_x; }
-	void sety(double new_y) { y = new_y; }
+    void setx(double new_x) { x = new_x; }
+    void sety(double new_y) { y = new_y; }
 
 };
 
 int main()
 {
-	Circle c;
+    Circle c;
 
-	c.color = "Black"; /* ok, color is public */
-	// c.x = 123; /* error, x is private */
+    c.color = "Black"; /* ok, color is public */
+    // c.x = 123; /* error, x is private */
 }
 ```
 
@@ -164,15 +164,15 @@ int main()
 
 ```c++
 class Circle {
-	/* … */
+    /* … */
 
-	/* Declaration */
-	friend void helloCircle(const Circle &circle);
+    /* Declaration */
+    friend void helloCircle(const Circle &circle);
 };
 
 /* Definition */
 void helloCircle(const Circle &circle) {
-	circle.showInfo();
+    circle.showInfo();
 }
 ```
 
@@ -203,36 +203,36 @@ class Circle {
 
 public:
 
-	Circle(); 								/* Default constructor */
-	
-	Circle(const Circle &); 				/* Copy constructor */
-	Circle &operator=(const Circle &);		/* Copy operator */
-	
-	Circle(const Circle &&);				/* Move constructor */
-	Circle &operator=(const Circle &&);		/* Move operator */
+    Circle(); 								/* Default constructor */
+    
+    Circle(const Circle &); 				/* Copy constructor */
+    Circle &operator=(const Circle &);		/* Copy operator */
+    
+    Circle(const Circle &&);				/* Move constructor */
+    Circle &operator=(const Circle &&);		/* Move operator */
 
-	/* 
-	 * You can have many constructors 
-	 * But if you declare default/copy/move constructors 
-	 * compiler doesn't create them
-	 */
-	Circle() : x(0), y(0), radius(1), color("green") {
+    /* 
+     * You can have many constructors 
+     * But if you declare default/copy/move constructors 
+     * compiler doesn't create them
+     */
+    Circle() : x(0), y(0), radius(1), color("green") {
         std::cout << "Default constructor without arguments\n" << std::endl;
     }
 
-	Circle(double x, double y, double radius, std::string color="White")
-		: x(x), y(y) /* initialization list */
+    Circle(double x, double y, double radius, std::string color="White")
+        : x(x), y(y) /* initialization list */
     {
-		std::cout << "Custom constructor with arguments\n" << std::endl;
+        std::cout << "Custom constructor with arguments\n" << std::endl;
 
-		radius = radius; /* recommend to use initialization list */
-		this->color = color;
-	}
+        radius = radius; /* recommend to use initialization list */
+        this->color = color;
+    }
 
-	/* But u always have only one destructor */
-	~Circle() {
-		std::cout << "Circle " << color<< " destroyed" << std::endl;
-	}
+    /* But u always have only one destructor */
+    ~Circle() {
+        std::cout << "Circle " << color<< " destroyed" << std::endl;
+    }
 };
 ```
 
@@ -241,13 +241,13 @@ public:
 ```c++
 int main()
 {
-	Circle c1, c2(0, 0, 10, "yellow");
-	// Circle cn = new Circle(...);
+    Circle c1, c2(0, 0, 10, "yellow");
+    // Circle cn = new Circle(...);
 
-	c1.showInfo();
-	c2.showInfo();
+    c1.showInfo();
+    c2.showInfo();
 
-	// delete cn;
+    // delete cn;
 }
 ```
 > `Circle` - класс (тип), `c1`, `c2` - объекты этого класса (инстансы)
@@ -259,32 +259,32 @@ class Circle {
     /* ... */
 
 public:
-	double getx(void) const {
-		/* 
-		 * here "this" will have "const Circle *" type 
-		 * we cannot modify any of attributes of object
-		 */
-		return this->x;
-	}
+    double getx(void) const {
+        /* 
+         * here "this" will have "const Circle *" type 
+         * we cannot modify any of attributes of object
+         */
+        return this->x;
+    }
 
-	void setx(double new_x) {
-		/* here "this" will have "Circle *" type */
-		x = new_x;
-	}
+    void setx(double new_x) {
+        /* here "this" will have "Circle *" type */
+        x = new_x;
+    }
 };
 
 void get_by_value(Circle circle)
 {
-	// local copy. outside no changes
-	double x = circle.getx();
-	circle.setx(x * 2);
+    // local copy. outside no changes
+    double x = circle.getx();
+    circle.setx(x * 2);
 }
 
 void get_by_ptr(Circle *pcircle)
 {
-	// pointer to original object
-	double x = circle->getx();
-	circle->setx(x * 2);
+    // pointer to original object
+    double x = circle->getx();
+    circle->setx(x * 2);
 }
 
 void get_by_const_ptr(const Circle *pcircle)
@@ -296,10 +296,10 @@ void get_by_const_ptr(const Circle *pcircle)
 
 void get_by_ref(Circle &rcircle)
 {
-	// same as pointer, but cannot be nullptr, syntax as "by value"
-	// original object will be changed
-	double x = circle.getx();
-	circle.setx(x * 2);
+    // same as pointer, but cannot be nullptr, syntax as "by value"
+    // original object will be changed
+    double x = circle.getx();
+    circle.setx(x * 2);
 }
 
 void get_by_cref(const Circle &rcircle)
@@ -363,21 +363,21 @@ Jim attacks with his knife.
 ```c++
 int main()
 {
-	{
-		Weapon club = Weapon("crude spiked club");
+    {
+        Weapon club = Weapon("crude spiked club");
 
-		HumanA bob("Bob", club);
-		bob.attack();
-		club.setType("some other type of club");
-		bob.attack();
+        HumanA bob("Bob", club);
+        bob.attack();
+        club.setType("some other type of club");
+        bob.attack();
     }
     {
-		Weapon club = Weapon("crude spiked club");
+        Weapon club = Weapon("crude spiked club");
 
-		HumanB jim("Jim", club);
-		jim.attack();
-		club.setType("some other type of club");
-		jim.attack();
+        HumanB jim("Jim", club);
+        jim.attack();
+        club.setType("some other type of club");
+        jim.attack();
     }
 }
 ```
