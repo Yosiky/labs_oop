@@ -1,9 +1,12 @@
 # ООП лабораторная 1
 
-**ООП** - объектно ориентированное программирование
+> **ООП** - объектно ориентированное программирование
+> **Атрибуты** класса - это переменные, объявленные внутри класса.
+
+## Общая информация
 
 ```c++
-/* Обсудить размер структуры */
+/* Discuss about structure size */
 struct S {
 	int x;
 	double d;
@@ -12,12 +15,26 @@ struct S {
 struct S {
 	int a, b, c;
 }; /* sizeof(S) == 12 */
+
+/* Which size is here? */
+struct S {
+	int x;
+	double d;
+
+	struct A {
+		int x;
+		double d;
+	}; 
+}; /* sizeof(S) == 16 */
+/* P.S.: we don't create a variable of type A */  
 ```
 
 ## Обращение к элементам класса
-`"." и "->"`
 
-Пример простого класса
+Обращение ко всем атрибутам и методам осуществляется с помощью `"."` или `"->"`.
+Выбор зависит от того является ли это объектом или указателем на объект.
+
+### Пример простого класса
 
 ```c++
 class Circle {
@@ -29,6 +46,7 @@ public:
 };
 
 void show_info(const Circle *circle) {
+	/* circle is a pointer so we use "->" */
 	std::cout << "Circle's info:" << std::endl;
 	std::cout << "\tCoordinate: x = " << circle->x << ", y = " << circle->y << std::endl;
 	std::cout << "\tRadius = " << circle->radius << std::endl;
@@ -40,7 +58,7 @@ int main()
 	// Circle c{0, 0, 3, "blue"}; /* Aggregate initialization */
 	Circle c;
 
-	c.x = 0;
+	c.x = 0; /* c is an object so we use "." */
 	c.y = 0;
 	c.radius = 3;
 	c.color = "Blue";
@@ -50,10 +68,20 @@ int main()
 ```
 
 ## Методы, ключевое слово this
+> **Методы** - это функции, объявленные внутри класса.  
+
+Что разрешено:
+- Объявление в любом порядке в теле класса. 
+- Внутри методов можно вызывать другие методы, принадлежащие этому классу.
+- Определние классов можно делать вне тела класса.
+- Создание других классов и структур внутри. А также `union`, `enum`.
+
+Что запрещено:
+- Нельзя объявлять `namespace` внутри класса.
 
 ```c++
 class Circle {
-    // ...
+    /* ... */
 
 public:
 	double area() {
@@ -64,20 +92,25 @@ public:
 		return 2 * M_PI * this->radius;
 	}
 
-	void showInfo() {
-	std::cout << "Circle's info:" << std::endl;
-	std::cout << "\tCoordinate: x = " << x << ", y = " << y << std::endl;
-	std::cout << "\tRadius = " << radius << std::endl;
-	std::cout << "\tColor =  " << color << std::endl;
-}
+	void showInfo(); /* Declaration */
 
 /* Can't init namespace */
 /* Can to init in out of class */
 /* Order of methods is not important */
 };
+
+void Circle::showInfo() { /* Definition */
+	std::cout << "Circle's info:" << std::endl;
+	std::cout << "\tCoordinate: x = " << x << ", y = " << y << std::endl;
+	std::cout << "\tRadius = " << radius << std::endl;
+	std::cout << "\tColor =  " << color << std::endl;
+}
 ```
 
-> `this` - Ключевое слово, доступное внутри определения класса, которое имеет тип указателя на текущий экземпляр класса. В константных методах - тип указателя константный
+
+> `this` - Ключевое слово, доступное внутри определения класса, которое 
+> имеет тип указателя на текущий экземпляр класса. В константных 
+> методах - тип указателя константный.
 
 ## Инкапсуляция
 > **Инкапсуляция** – это способ сокрытия информации от внешнего мира.
@@ -86,9 +119,17 @@ public:
 
 ## Модификаторы доступа public and private, геттеры, сеттеры
 
+> `public` - говорит, что всё, объявленное ниже может быть доступно 
+> из вне класса.  
+> `private` - говорит, что всё, объявленное ниже может быть использовано 
+> только внутри класса.  
+> **Геттеры (getters)** - так называются методы, возвращающие значения 
+> имеющихся в классе атрибутов.  
+> **Сеттеры (setters)** - так называются методы, устанавливающие значения
+> в имеющиеся в классе атрибуты.
+
 ```c++
 class Circle {
-
 public:
 	std::string color;
 
@@ -97,46 +138,36 @@ private:
 	double y;
 	double radius;
 
-
 public:
 
-	double getx(void) {
-		return x;
-	}
+	double getx(void) { return x; }
+	double gety(void) { return y; }
 
-	double gety(void) {
-		return y;
-	}
-
-	void setx(double new_x) {
-		x = new_x;
-	}
-
-	void sety(double new_y) {
-		y = new_y;
-	}
+	void setx(double new_x) { x = new_x; }
+	void sety(double new_y) { y = new_y; }
 
 };
 
 int main()
 {
-	class c;
+	Circle c;
 
-	c.color = "Black"; // ok, color is public
-	// c.x = 123; // error, x is private
+	c.color = "Black"; /* ok, color is public */
+	// c.x = 123; /* error, x is private */
 }
 ```
 
 
 ## Друзья
-> Это функции или класса, которые не являются членом класса, но имеют доступ к private/protecte dэлементам класса. Дружба - это плохо. Ведет к плохому code-style.
+> Это функции или классы, которые не являются членом класса, но имеют доступ 
+> ко всем элементам класса. Зачастую **дружба** ведет к плохому **code-style**.
 
 ```c++
 class Circle {
 	/* … */
 
 	/* Declaration */
-	friend void helloCircle();
+	friend void helloCircle(const Circle &circle);
 };
 
 /* Definition */
@@ -147,12 +178,44 @@ void helloCircle(const Circle &circle) {
 
 ## Конструкторы, деструкторы
 
+> **Конструкторы** - это блок инструкций, вызываемых при создании объекта класса. 
+
+Компилятор по умолчанию создает:
+- Пустой конструктор
+- Конструктор и оператор копирования
+- Конструктор и оператор перемещения (с С++11)
+
+> **P.S.:** о операторах будет рассказано позднее.
+
+> **Деструкторы** - это блок интсрукций, вызываемые при уничтожении объекта класса.
+
+Компилятор по умолчанию создает пустой **деструктор**.
+
+> **Конструкторов** у класса может быть сколько угодно, но **деструктор** 
+> всегда только один.
+
+> **Список инициализиации (initializaion list)** - синтаксическая возможность
+> языка, позволяющая инициализировать переменные до создания самого объекта.
+
 ```c++
 class Circle {
-    // ...
+    /* ... */
 
 public:
-	/* You can have many constructors */
+
+	Circle(); 								/* Default constructor */
+	
+	Circle(const Circle &); 				/* Copy constructor */
+	Circle &operator=(const Circle &);		/* Copy operator */
+	
+	Circle(const Circle &&);				/* Move constructor */
+	Circle &operator=(const Circle &&);		/* Move operator */
+
+	/* 
+	 * You can have many constructors 
+	 * But if you declare default/copy/move constructors 
+	 * compiler doesn't create them
+	 */
 	Circle() : x(0), y(0), radius(1), color("green") {
         std::cout << "Default constructor without arguments\n" << std::endl;
     }
@@ -162,7 +225,7 @@ public:
     {
 		std::cout << "Custom constructor with arguments\n" << std::endl;
 
-		radius = radius;
+		radius = radius; /* recommend to use initialization list */
 		this->color = color;
 	}
 
@@ -193,17 +256,19 @@ int main()
 
 ```c++
 class Circle {
-    // ...
+    /* ... */
 
 public:
 	double getx(void) const {
-		// here "this" will have "const Circle *" type
-		// we cannot modify any of attributes of object
+		/* 
+		 * here "this" will have "const Circle *" type 
+		 * we cannot modify any of attributes of object
+		 */
 		return this->x;
 	}
 
 	void setx(double new_x) {
-		// here "this" will have "Circle *" type
+		/* here "this" will have "Circle *" type */
 		x = new_x;
 	}
 };
