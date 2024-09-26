@@ -108,6 +108,7 @@ int main()
 - Внутри методов можно вызывать другие методы, принадлежащие этому классу.
 - Определние методов можно делать вне тела класса (но объявление по прежнему должно быть внутри).
 - Создание других классов и структур внутри. А также `union`, `enum`.
+- Нельзя создавать новые `namespace` внутри классов.
 
 Что запрещено:
 - Нельзя объявлять `namespace` внутри класса.
@@ -126,10 +127,6 @@ public:
     }
 
     void showInfo(); /* Declaration */
-
-/* Can't init namespace */
-/* Can to init in out of class */
-/* Order of methods is not important */
 };
 
 void Circle::showInfo() { /* Definition */
