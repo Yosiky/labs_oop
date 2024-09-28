@@ -1,11 +1,18 @@
 # ООП лабораторная №3
 
-## Перегрузка операторов
+## Перегрузка операторов, конструкторов
 
 ```c++
 struct Point {
     float x;
     float y;
+};
+```
+Если мы хотим несколько свособов создать объект - можно определить несколько конструкторов с разными аргументами.
+
+```c++
+struct Point {
+    /* ... */
 
     Point(float x, float y)
         : x(x), y(y)
@@ -18,6 +25,13 @@ struct Point {
     Point()
         : x(0), y(0)
     {}
+};
+```
+
+Перегрузка операторов позволяет применять математические операторы к пользовательским классам
+```c++
+struct Point {
+    /* ... */
 
     Point operator +(Point other) {
         return Point(x + other.x, y + other.y);
@@ -36,18 +50,41 @@ struct Point {
     /* … */
 
     float operator *(Point other) {
-/* dot product */
-return x * other.x + y * other.y;
-}
+        /* dot product */
+        return x * other.x + y * other.y;
+    }
 };
 
-Point operator *(float factor, Point other) {
-    return Point(other.x * factor, other.y * factor);
+int main()
+{
+    Point a(1, 2);
+    Point b;
+
+    Point s = a + b;
+    Point t = s * 4;
+    float f = t * 2.0;
 }
 ```
 
-При перегрузке бинарного оператора оператора указывается только второй (правый) аргумент, первый (левый) подставляется неявно как this.	
-Если необходимо чтобы объект класса выступал левым аргументом, то оператор перегружается вне класса. Тогда оба аргумента (и левый и правый) указываются явно
+При перегрузке бинарного оператора оператора указывается только второй (правый) аргумент, первый (левый) подставляется неявно как `this`.	
+Если необходимо чтобы объект класса выступал левым аргументом, то оператор перегружается вне класса. Тогда оба аргумента (и левый и правый) указываются явно. Это единственный оправданный пример использования `friend` (чтобы перегружаемый оператор имел доступ к полям класса).
+
+```c++
+struct Point {
+private:
+    float x;
+    float y;
+    
+    /* ... */
+
+public:
+    friend Point operator *(float factor, Point other);
+};
+
+Point Point::operator *(float factor, Point other) {
+    return Point(other.x * factor, other.y * factor);
+}
+```
 
 template <class T>
 class Iterator {
