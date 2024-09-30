@@ -1,6 +1,6 @@
-# ООП лабораторная №3
+# ООП лабораторная 3
 
-## Перегрузка операторов, конструкторов
+## Перегрузка конструкторов
 
 ```c++
 struct Point {
@@ -27,6 +27,8 @@ struct Point {
     {}
 };
 ```
+
+## Перегрузка операторов
 
 Перегрузка операторов позволяет применять математические операторы к пользовательским классам
 ```c++
@@ -66,15 +68,15 @@ int main()
 }
 ```
 
-При перегрузке бинарного оператора оператора указывается только второй (правый) аргумент, первый (левый) подставляется неявно как `this`.	
-Если необходимо чтобы объект класса выступал левым аргументом, то оператор перегружается вне класса. Тогда оба аргумента (и левый и правый) указываются явно. Это единственный оправданный пример использования `friend` (чтобы перегружаемый оператор имел доступ к полям класса).
+При перегрузке бинарного оператора оператора указывается только второй (правый) аргумент, первый (левый) подставляется неявно как `this`.
+Если необходимо чтобы объект класса выступал правым аргументом, то оператор перегружается вне класса. Тогда оба аргумента (и левый и правый) указываются явно. Это единственный оправданный пример использования `friend` (чтобы перегружаемый оператор имел доступ к полям класса).
 
 ```c++
 struct Point {
 private:
     float x;
     float y;
-    
+
     /* ... */
 
 public:
@@ -86,32 +88,109 @@ Point Point::operator *(float factor, Point other) {
 }
 ```
 
-template <class T>
+Перегрузка унарных операторов и инкремента/декремента происходит особым образом.
+
+```c++
 class Iterator {
-    T *ptr;
+private:
+    int *ptr;
 
 public:
-    Iterator(T *ptr)
+    Iterator(int *ptr)
         : ptr(ptr)
     {}
 
-    T &operator ++() {
-        /* ++iter */
+    /* ++iter */
+    Iterator &operator ++() {
+        /* notiсe: return type is reference, we do not need to create new object */
         ptr++;
         return *this;
     }
 
-    T operator ++(int) {
-        /* iter++ */
+    /* iter++ */
+    Iterator operator ++(int) {
+        /* notice: return type is value itself, we return new object */
         Iterator ret(ptr);
         ptr++;
         return ret;
     }
 };
+```
 
-Перегрузка унарных операторов и инкремента/декремента происходит особым образом.
+Обратите внимание, в случае перегрузки унарного плюса нам не нужно выполнять никаких действий и создавать новые объекты, поэтому просто вернем ссылку на себя же без изменений. Но в таком случае возникает проблема:
+ - если вернем не константную ссылку, то не сможем вызвать оператор от константных объектов.
+ - если вернем константную ссылку, то не сможем изменять полученый объект, а это нелогиченое поведение оператора.
 
+Поэтому реализуем оба варианта, это частая прктика делать отдельные реализации пререгрузки операторов для константных и не константных объектов.
 
+```c++
+class Point {
+public:
+    float x;
+    float y;
+
+    /* ... */
+
+    Point(float x, float y)
+        : x(x), y(y)
+    {}
+
+    /* a = -b */
+    Point operator -() const {
+        return Point(-x, -y);
+    }
+
+    /* a = +b */
+    const Point &operator +() const {
+        return *this;
+    }
+
+    /* a = +b */
+    Point &operator +() {
+        return *this;
+    }
+};
+```
+
+## Конструктор копирования, оператор присваивания
+
+```c++
+class IntArray {
+private:
+    int *data;
+    int size;
+
+public:
+    IntArray(int s) {
+        data = new int[n]; /* allocate array of n integers */
+    }
+
+    ~IntArray() {
+        delete data[]; /* free allocated memory */
+    }
+
+    /* create object as copy of other existing object */
+    IntArray(const IntArray &other) {
+        data = new int[other.size]; /* allocate array */
+
+        for (int i = 0; i < other.size; i++) { /* copy contents */
+            data[i] = other[i];
+        }
+    }
+
+    /* assign currnet object to other existing object */
+    IntArray &operator =(const IntArray &other) {
+        delete data[]; /* we already have allocated memory, first free it */
+
+        data = new int[other.size];
+        for (int i = 0; i < other.size; i++) { /* copy contents */
+            data[i] = other[i];
+        }
+    }
+};
+```
+
+Что произойдет, если присвоить IntArray самому себе? Как это исправить?
 
 # Задания
 
