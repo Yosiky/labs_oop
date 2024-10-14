@@ -5,14 +5,14 @@
 Это один из ключевых принципов ООП, позволяющий использовать перменные и
 методы другого класса как свои собственные.
 
-> Класс **родитель (базовый)** - это класс, от которого будут наследоваться 
+> Класс **родитель (базовый)** - это класс, от которого будут наследоваться
 > данные и методы.  
 > **Дочерний** класс **(производный)** - это класс, который наследует данные из
 > класса родителя.
 
 ### Атрибут доступа protected
 
-> Ключевое слово **protected** - говорит, что всё объявленное ниже данного 
+> Ключевое слово `protected` - говорит, что всё объявленное ниже данного
 > слова будет недоступно из вне класса, но дочерние классы могут использовать.
 
 #### Пример наследования
@@ -46,14 +46,14 @@ int main() {
 
     Circle c;
     c.name;
-    c.showInfo(); /* doesn't work too because this method is marked as protected */
+    c.showInfo(); /* doesn't work too because this method is marked as protected too */
 }
 ```
 
 ### Преобразование доступа в зависимости от способа наследования
 
 При наследование атрибуты и методы изменяют свои права доступа в зависимости
-от способа наследования. Ниже в таблицах приведены преобразования. 
+от способа наследования. Ниже в таблицах приведены преобразования.
 
 > Подробнее Вы посмотреть и поэксперемнтировать можете в файле 
 "[src/lab2/base_inheritance.cpp](../src/lab2/base_inheritance.cpp)".
@@ -96,11 +96,12 @@ int main() {
 Cсылка: [докумнетация почему нельзя вызывать виртуальный методв внутри конструктора](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines.html#Rc-ctor-virtual)  
 Ссылка: [как все-таки можно вызвать виртуальный метод внутри конструктора](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines.html#Rc-factory)
 
-#### Пример динамического полиморфизма
+#### Динамический полиморфизм
 
-> В динамическом полиморфизме используют принципы наследования совместно с
-> виртуальными функциями.
+В динамическом полиморфизме используют принципы наследования совместно с
+виртуальными функциями.
 
+> **P.S.**: файл с примером ниже "[src/lab2/virtual_methods.cpp](../src/lab2/virtual_methods.cpp)"
 ```c++
 class Figure {
 public:
@@ -126,10 +127,10 @@ public:
 };
 
 int main() {
-	{
-		Figure *anonim = new Figure(/* parameters */);
-		anonim->showInfo();
-	}
+    {
+        Figure *anonim = new Figure(/* parameters */);
+        anonim->showInfo();
+    }
     {
         Figure *anonim = new Circle(/* parameters */);
         anonim->showInfo(); /* What will we see? */
@@ -141,10 +142,11 @@ int main() {
 }
 ```
 
+
+#### Статический полиморфизм
+
 Помимо динамического полиморфизма существует еще и статический в его основе
 лежити спользование шаблонов.
-
-#### Пример статического полиморфизма
 
 > Про шаблоны мы будем говорить в последующих лабораторных. Здесь они 
 > используются исключительно в качестве примера.
@@ -168,7 +170,44 @@ int main() {
 
 ### Абстрактные классы
 
-> **Абстрактные классы** - TODO
+> **Абстрактные классы** - выступают в роли интерфейса, которому должны следовать
+> все дочерние классы. Что бы класс считался абстактным ему необходимо иметь
+> хотя бы одну **чисто виртуальную** функцию (как это делается приведено ниже).
+> Так же следует запомнить, что в классах наследниках должны быть перегружены
+> все чисто виртуальные функции, иначе у Вас не получится создать экземпляр класса.
+
+Создание абстрактного класса делается следующим образом.
+
+> **P.S.**: подробнее можно посмтореть в файле "[scr/lab2/abstract_class.cpp](../scr/lab2/abstract_class.cpp)"
+
+```c++
+class Figure {
+public:
+    virtual void printInfo(void) const = 0; /* You must to mark a function "<func> = 0" */
+};
+
+class Circle : Figure {
+public:
+    void printInfo(void) const override {
+        std::cout << "It's Circle" << std::endl;
+    }
+};
+
+class Square : Figure {
+public:
+
+    /* If function will be uncommented we don't get error in main() */
+    // void printInfo(void) const override {
+    //     std::cout << "It's Square" << std::endl;
+    // }
+};
+
+int main() {
+    Circle circle;
+    Square square; /* We get error because printInfo() isn't overrided in Square */
+}
+
+```
 
 ## Преобразование типов
 
@@ -176,7 +215,7 @@ int main() {
 - static_cast
 - dynamic_cast
 - const_cast
-- reinterpret_cast
+- reinterpret_castg
 
 ### static_cast
 
@@ -201,9 +240,11 @@ int main() {
 
 Данные преобразование **НЕ** рекомендуется для использовать при написании на **С++**.
 
+> **P.S.**: пример можно посмотреть в "[src/lab2/c_cast.cpp](src/lab2/c_cast.cpp)"
+
 ```c++
 int main() {
-	/* My machine use LITTLE ENDIAN */
+    /* My machine use LITTLE ENDIAN */
     long long a = 0x0000'0000'414c'4f48; /* HOLA */
     char *str = (char *)&a; /* C-style cast */
 
@@ -212,3 +253,4 @@ int main() {
 ```
 
 ## Задания
+
