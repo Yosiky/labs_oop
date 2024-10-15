@@ -186,15 +186,18 @@ public:
     virtual void printInfo(void) const = 0; /* You must to mark a function "<func> = 0" */
 };
 
-class Circle : Figure {
-public:
+/*
+ * If you don't say a type of inheritance, then the type will be used default:
+ * - public for structs
+ * - private for classes
+ */
+struct Circle : Figure {
     void printInfo(void) const override {
         std::cout << "It's Circle" << std::endl;
     }
 };
 
-class Square : Figure {
-public:
+struct Square : Figure {
 
     /* If function will be uncommented we don't get error in main() */
     // void printInfo(void) const override {
@@ -205,6 +208,9 @@ public:
 int main() {
     Circle circle;
     Square square; /* We get error because printInfo() isn't overrided in Square */
+
+    circle.printInfo();
+    square.printInfo();
 }
 
 ```
@@ -212,18 +218,53 @@ int main() {
 ## Преобразование типов
 
 Для явного преобразования типов в C++ принято использовать следующие операторы:
-- static_cast
-- dynamic_cast
-- const_cast
-- reinterpret_castg
+- `static_cast`
+- `dynamic_cast`
+- `const_cast`
+- `reinterpret_cast`
 
 ### static_cast
 
 > `static_cast` - используется, когда вы знаете тип приводимого объекта.
 
+В большинстве случаев, если Вы не знаете какой каст следует исопльзовать,
+то вам необходим `static_cast`.
+
+```c++
+class Figure;
+class Circle;
+
+int main() {
+    Circle c;
+    Figure *ptr = static_cast<Figure *>&c;
+}
+```
+
 ### dynamic_cast
 
 > `dynamic_cast` - использутеся, когда вы точно не знаете тип приводимого объекта.
+
+```c++
+class Figure;
+class Circle;
+class Square;
+class Rectangle;
+
+template <class T>
+T *createFigure() {
+    return new T;
+}
+
+int main() {
+    Figure *ptr_circle = dynamic_cast<Figure *>(createFigure<Circle>());
+    Figure *ptr_square = dynamic_cast<Figure *>(createFigure<Square>());
+    Figure *ptr_rectangle = dynamic_cast<Figure *>(createFigure<Rectangle>());
+
+    ptr_circle->figureInfo();
+    ptr_square->figureInfo();
+    ptr_rectangle->figureInfo();
+}
+```
 
 ### const_cast
 
@@ -232,13 +273,16 @@ int main() {
 **НЕ ИСПОЛЬЗУЙТЕ** `const_cast` для снятия `const` у объекта.  
 Ссылка: [почему не стоит так делать](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines.html#es50-dont-cast-away-const)
 
+В большинстве случаев использование `const_cast` подразумевает не правильную
+архитектуру вашей программы.
+
 ### reinterpret_cast
 
-> `reinterpret_cast` - тоже самое что и **C-style**.
+> `reinterpret_cast` - 
 
 ### Преобразование в C-style
 
-Данные преобразование **НЕ** рекомендуется для использовать при написании на **С++**.
+Данные преобразование **НЕ рекомендуется** для использовать при написании на **С++**.
 
 > **P.S.**: пример можно посмотреть в "[src/lab2/c_cast.cpp](src/lab2/c_cast.cpp)"
 
