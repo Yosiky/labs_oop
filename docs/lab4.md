@@ -40,7 +40,7 @@ int min(int lft, int rht) {
 
 В с++ возможно создавать шаблоны функций и классов.
 
-### Шаблоны функций
+## Шаблоны функций
 
 ```c++
 template <class T>
@@ -80,7 +80,7 @@ int main()
 в данном случае будет вызвана функция `int min(int, int)`, и оба аргумента
 приведутся из `float` к типу `int`.
 
-### Специализация шаблонов
+### Специализация шаблонов функций
 
 Бывает, что какой-то тип имеет специфическое поведение, которое надо учитывать
 в шаблонной функции. Для этого можно сделать специализацию шаблона для этого типа.
@@ -104,7 +104,134 @@ int main(void) {
 В таком случае при вызове функции от типа `string` будет вызвана специфичная
 реализация, а для других типов - общая.
 
-### Шаблоны классов
+### Шаблоны методов / конструкторов / операторов
+
+Так как методы класса и операторы яаляются функциями, к ним тоже применимы шаблоны:
+
+```c++
+class MyString {
+    std::string str;
+
+public:
+    template <class T>
+    String(const T &init) {
+        str = std::to_string(init); // convert any type to string
+    }
+
+    template <class T>
+    String &operator +=(const T &other) {
+        str += std::to_string(other);
+        return *this;
+    }
+
+    template <class T>
+    String join(const T &array) { // like Python's str.join() method
+        String ret;
+
+        for (auto val : array) {
+            ret += val;
+            ret += str;
+        }
+
+        return ret;
+    }
+};
+```
+
+### Шаблоны с несколькими типами
+
+При указании типа `T` в шаблоне - все переменные типа `T` будут иметь одинаковый
+тип при подстановке типов в шаблон на этапе компиляции. Поэтому, если мы
+попытаемся передать туда разные типы - то компилятор выдаст ошибку, потому что
+он не знает какой из типов выюрать в качестве подстановки (в таком случае
+придется явно указывать какой тип мы хотим использовать)
+
+```c++
+template <class T>
+T min(T a, T b) {
+    return a < b ? a : b;
+}
+
+int main() {
+    int a = 123;
+    float b = 2.71;
+
+    std::cout << min(a, b); // error: deduced conflicting types for parameter 'T'
+
+    std::cout << min<float>(a, b); // ok, float will be used for type T
+}
+```
+
+Но есть возможность указывать несколько типов в шаблоне. В таком случае можно
+подставлять любые комбинации типов в параметры шаблона.
+
+```c++
+template <class Type1, class Type2>
+Type1 min(Type1 a, Type2 b) {
+    return a < b ? a : b;
+}
+
+int main() {
+    int a = 123;
+    float b = 4.31;
+    char c = 'x';
+    double d = 414.13343;
+
+    std::cout << min(a, b); // ok, Type1 = int, Type2 = float
+    std::cout << min(b, c); // ok, Type1 = float, Type2 = char
+    std::cout << min(c, d); // ok, Type1 = char, Type2 = double
+
+    std::cout << min(a, a); // ok, Type1 = int, Type2 = int
+    std::cout << min(b, b); // ok, Type1 = float, Type2 = float
+}
+```
+
+Так все переменные типа `Type1` будут иметь одинаковый тип, и все переменные
+типа `Type2` будут иметь одинаковый тип, но `Type1` и `Type2` могут быть как разными типами, так и одинаковыми.
+
+
+## Шаблоны классов
+
+Шаблоны можно применять и к классам. Таким образом можно работать с полями
+класса независимо от их типа:
+
+```c++
+template <class T>
+class Point {
+    T x;
+    T y;
+
+public:
+    Point(T xv, T yv)
+        : x(xv), y(yv)
+    {}
+
+    Point operator +(Point other) { // here we do not need to write Point<T>, just
+                                    // Point, and here all Point variables will
+                                    // have same type T
+        return Point(x + other.x, y + other.y);
+    }
+
+    template <class Other>
+    Point<Other> operator +(Point<Other> other) { // here we want to add points
+                                                  // of different types, so we
+                                                  // need to specify type
+                                                  // of other point to be
+                                                  // different from type T
+        return Point<Other>(x + other.x, y + other.y);
+    }
+
+    T length(void) {
+        return sqrt(x * x + y * y);
+    }
+};
+
+int main()
+{
+    Point<int> p(1, 2);
+    Point d(1.2, 4.5); // compiler will deduce type to be double
+}
+```
 
 # Задания
 
@@ -137,7 +264,7 @@ int main(void) {
 позволяют следовать следующему поведению:
  - конструктор без параметров: создают пустой массив.
  - конструктор с `unsigned int n`: создает массив из `n` элементов,
- инициализирующие значения по умолчанию (Подсказка: `int *a = new int()`,
+ инициализирующие значения по умолчанию (Подсказка: `int *a = new int[...]`,
  и посмотрите значение `*a`).
  - конструктор копирования и оператор присваивания. В обоих случаях,
  изменение одного из массивов после копирования/присваивания,
